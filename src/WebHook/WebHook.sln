@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHook.Class", "WebHook.Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHook.Data", "WebHook.Data\WebHook.Data.csproj", "{D6C24D1F-870F-46FC-8322-D6E9C7C9A30B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHook.Logic", "WebHook.Logic\WebHook.Logic.csproj", "{6E664737-2FD7-4CDF-9F07-59FFE826C660}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{D6C24D1F-870F-46FC-8322-D6E9C7C9A30B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6C24D1F-870F-46FC-8322-D6E9C7C9A30B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6C24D1F-870F-46FC-8322-D6E9C7C9A30B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E664737-2FD7-4CDF-9F07-59FFE826C660}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E664737-2FD7-4CDF-9F07-59FFE826C660}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E664737-2FD7-4CDF-9F07-59FFE826C660}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E664737-2FD7-4CDF-9F07-59FFE826C660}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,6 +1,9 @@
 
+using WebHook.Class.Event;
 using WebHook.Data;
 using WebHook.Data.Test;
+using WebHook.Logic;
+using WebHook.Logic.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<IEventNotifier<EntityChangedEvent>, EntityChangedNotifier>();
 
 builder.Services.AddDbContext<WebHookContext>();
 

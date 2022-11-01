@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Webhook.Class\WebHook.Class.csproj" />
     <ProjectReference Include="..\WebHook.Data\WebHook.Data.csproj" />
+    <ProjectReference Include="..\WebHook.Logic\WebHook.Logic.csproj" />
   </ItemGroup>
 
 </Project>
