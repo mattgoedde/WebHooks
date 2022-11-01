@@ -5,5 +5,5 @@ namespace WebHook.Logic.Base;
 public interface IEventNotifier<TEvent>
     where TEvent : Event
 {
-    Task Notify(TEvent newEvent);
+    Task Notify(TEvent Event);
 }
