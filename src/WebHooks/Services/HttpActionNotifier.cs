@@ -10,6 +10,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Text.Json;
 using WebHooks.Actions;
+using System.Threading;
 
 namespace WebHooks.Services
 {
@@ -34,7 +35,7 @@ namespace WebHooks.Services
             await Task.WhenAll(eventTasks);
         }
 
-        private Task Send<TAction>(TAction action, Subscription subscription) where TAction : BaseAction
+        private async Task Send<TAction>(TAction action, Subscription subscription) where TAction : BaseAction
         {
             using var httpClient = new HttpClient();
 
@@ -62,7 +63,7 @@ namespace WebHooks.Services
                 httpClient.DefaultRequestHeaders.Add("x-hook-signature-256", signature);
             }
 
-            return httpClient.PostAsJsonAsync(subscription.Endpoint, action);
+            await httpClient.PostAsJsonAsync(subscription.Endpoint, action);
         }
     }
 }
