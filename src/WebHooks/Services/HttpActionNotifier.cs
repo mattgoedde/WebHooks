@@ -5,6 +5,8 @@ using System.Net.Http.Json;
 using System.Net.Http;
 using WebHooks.Actions.Base;
 using WebHooks.Services.Base;
+using WebHooks.Subscriptions.Base;
+using WebHooks.Subscriptions;
 
 namespace WebHooks.Services
 {
@@ -19,16 +21,38 @@ namespace WebHooks.Services
 
         public async Task Notify<TAction>(TAction action) where TAction : ActionBase
         {
-            using var httpClient = new HttpClient();
-
             List<Task> eventTasks = new List<Task>();
 
-            foreach (var url in await _subscribers.GetSubcribersForAction(action))
+            foreach (var subscription in await _subscribers.GetUnauthenticatedSubcribersForAction(action))
             {
-                eventTasks.Add(httpClient.PostAsJsonAsync(url, action));
+                eventTasks.Add(Send(action, subscription));
+            }
+            foreach (var subscription in await _subscribers.GetBasicAuthSubcribersForAction(action))
+            {
+                eventTasks.Add(Send(action, subscription));
+            }
+            foreach (var subscription in await _subscribers.GetOAuthSubcribersForAction(action))
+            {
+                eventTasks.Add(Send(action, subscription));
             }
 
             await Task.WhenAll(eventTasks);
+        }
+
+        private Task Send<TAction>(TAction action, Subscription subscription) where TAction : ActionBase
+        {
+            using var httpClient = new HttpClient();
+            return httpClient.PostAsJsonAsync(subscription.Endpoint, action);
+        }
+        private Task Send<TAction>(TAction action, BasicAuthSubscription subscription) where TAction : ActionBase
+        {
+            using var httpClient = new HttpClient();
+            return httpClient.PostAsJsonAsync(subscription.Endpoint, action);
+        }
+        private Task Send<TAction>(TAction action, OAuthSubscription subscription) where TAction : ActionBase
+        {
+            using var httpClient = new HttpClient();
+            return httpClient.PostAsJsonAsync(subscription.Endpoint, action);
         }
     }
 }
