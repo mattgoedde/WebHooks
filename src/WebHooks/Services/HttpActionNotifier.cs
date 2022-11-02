@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Net.Http.Json;
+using System.Net.Http.Headers;
 using System.Net.Http;
 using WebHooks.Actions.Base;
 using WebHooks.Services.Base;
@@ -47,6 +48,10 @@ namespace WebHooks.Services
         private Task Send<TAction>(TAction action, BasicAuthSubscription subscription) where TAction : ActionBase
         {
             using var httpClient = new HttpClient();
+            var authenticationString = $"{subscription.Username}:{subscription.Password}";
+            var base64EncodedAuthenticationString = Convert.ToBase64String(System.Text.ASCIIEncoding.UTF8.GetBytes(authenticationString));
+            // content.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64EncodedAuthenticationString);
             return httpClient.PostAsJsonAsync(subscription.Endpoint, action);
         }
         private Task Send<TAction>(TAction action, OAuthSubscription subscription) where TAction : ActionBase
