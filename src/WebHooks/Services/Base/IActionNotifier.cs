@@ -6,6 +6,6 @@ namespace WebHooks.Services.Base
 {
     public interface IActionNotifier
     {
-        public Task Notify<TAction>(TAction action) where TAction : BaseAction;
+        public Task NotifyAsync<TAction>(TAction action) where TAction : BaseAction;
     }
 }

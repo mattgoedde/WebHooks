@@ -26,7 +26,7 @@ namespace WebHooks.Services
             _subscribers = subscribers;
         }
 
-        public async Task Notify<TAction>(TAction action) where TAction : BaseAction
+        public async Task NotifyAsync<TAction>(TAction action) where TAction : BaseAction
         {
             List<Task> eventTasks = new List<Task>();
 

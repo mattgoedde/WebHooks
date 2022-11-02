@@ -17,6 +17,6 @@ static async Task Main(IServiceProvider services)
 {
     Console.WriteLine("Hello, World!");
     var actionNotifier = services.GetRequiredService<IActionNotifier>();
-    await actionNotifier.Notify(new MessageAction() { Message = "Hello WebHook!" });
+    await actionNotifier.NotifyAsync(new MessageAction() { Message = "Hello WebHook!" });
     Console.WriteLine("Goodbye, World!");
 };
