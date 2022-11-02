@@ -1,5 +1,7 @@
 # WebHooks
 
+### 1. Implement `ISubscriberService`
+
 ```csharp
 public class SubscriberService : ISubscriberService
 {
@@ -19,6 +21,8 @@ public class SubscriberService : ISubscriberService
 }
 ```
 
+### 2. Implement `BaseAction`
+
 ```csharp
 public class MessageAction : BaseAction
 {
@@ -26,9 +30,13 @@ public class MessageAction : BaseAction
 }
 ```
 
+3. Call `AddWebHooks<TSubscriberService>()` to add `IActionNotifier` to DI Container
+
 ```csharp
 services.AddWebHooks<SubscriberService>();
 ```
+
+### 4. Inject `IActionNotifier` into your class
 
 ```csharp
 public class WeatherController : ControllerBase
@@ -41,6 +49,8 @@ public class WeatherController : ControllerBase
     }
 }
 ```
+
+### 5. Call `IActionNotifier.NotifyAsync<TAction>()` in your code
 
 ```csharp
 await _actionNotifier.NotifyAsync(new MessageAction() { "Hello, WebHook!" });
