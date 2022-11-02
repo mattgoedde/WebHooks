@@ -1,6 +1,9 @@
-namespace WebHooks.Actions.Base;
+using System;
 
-public abstract class ActionBase
+namespace WebHooks.Actions.Base
 {
-    public DateTime EventTimestampUtc { get; set; } = DateTime.UtcNow;
+    public abstract class ActionBase
+    {
+        public DateTime EventTimestampUtc { get; set; } = DateTime.UtcNow;
+    }
 }

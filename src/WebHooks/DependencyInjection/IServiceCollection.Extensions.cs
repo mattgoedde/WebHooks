@@ -2,15 +2,16 @@ using Microsoft.Extensions.DependencyInjection;
 using WebHooks.Services;
 using WebHooks.Services.Base;
 
-namespace WebHooks.DependencyInjection;
-
-public static class IServiceCollectionExtensions
+namespace WebHooks.DependencyInjection
 {
-    public static IServiceCollection AddWebhooks<TSubscriberUrlService>(this IServiceCollection services)
-        where TSubscriberUrlService : class, ISubscriberService
+    public static class IServiceCollectionExtensions
     {
-        return services
-            .AddScoped<IActionNotifier, HttpActionNotifier>()
-            .AddScoped<ISubscriberService, TSubscriberUrlService>();
+        public static IServiceCollection AddWebhooks<TSubscriberUrlService>(this IServiceCollection services)
+            where TSubscriberUrlService : class, ISubscriberService
+        {
+            return services
+                .AddScoped<IActionNotifier, HttpActionNotifier>()
+                .AddScoped<ISubscriberService, TSubscriberUrlService>();
+        }
     }
 }

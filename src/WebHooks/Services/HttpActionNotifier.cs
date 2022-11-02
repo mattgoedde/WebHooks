@@ -1,29 +1,34 @@
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Net.Http.Json;
+using System.Net.Http;
 using WebHooks.Actions.Base;
 using WebHooks.Services.Base;
 
-namespace WebHooks.Services;
-
-public class HttpActionNotifier : IActionNotifier
+namespace WebHooks.Services
 {
-    private readonly ISubscriberService _subscribers;
-
-    public HttpActionNotifier(ISubscriberService subscribers)
+    public class HttpActionNotifier : IActionNotifier
     {
-        _subscribers = subscribers;
-    }
+        private readonly ISubscriberService _subscribers;
 
-    public async Task Notify<TAction>(TAction action) where TAction : ActionBase
-    {
-        using var httpClient = new HttpClient();
-
-        List<Task> eventTasks = new();
-
-        foreach (var url in await _subscribers.GetSubcribersForAction(action))
+        public HttpActionNotifier(ISubscriberService subscribers)
         {
-            eventTasks.Add(httpClient.PostAsJsonAsync(url, action));
+            _subscribers = subscribers;
         }
 
-        await Task.WhenAll(eventTasks);
+        public async Task Notify<TAction>(TAction action) where TAction : ActionBase
+        {
+            using var httpClient = new HttpClient();
+
+            List<Task> eventTasks = new List<Task>();
+
+            foreach (var url in await _subscribers.GetSubcribersForAction(action))
+            {
+                eventTasks.Add(httpClient.PostAsJsonAsync(url, action));
+            }
+
+            await Task.WhenAll(eventTasks);
+        }
     }
 }

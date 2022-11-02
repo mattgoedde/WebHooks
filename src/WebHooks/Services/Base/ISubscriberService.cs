@@ -1,8 +1,12 @@
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using WebHooks.Actions.Base;
 
-namespace WebHooks.Services.Base;
-
-public interface ISubscriberService
+namespace WebHooks.Services.Base
 {
-    Task<IEnumerable<Uri>> GetSubcribersForAction<TAction>(TAction action) where TAction : ActionBase;
+    public interface ISubscriberService
+    {
+        Task<IEnumerable<Uri>> GetSubcribersForAction<TAction>(TAction action) where TAction : ActionBase;
+    }
 }
