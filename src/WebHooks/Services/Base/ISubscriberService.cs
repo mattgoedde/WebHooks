@@ -9,8 +9,6 @@ namespace WebHooks.Services.Base
 {
     public interface ISubscriberService
     {
-        Task<IEnumerable<Subscription>> GetUnauthenticatedSubcribersForAction<TAction>(TAction action) where TAction : ActionBase;
-        Task<IEnumerable<BasicAuthSubscription>> GetBasicAuthSubcribersForAction<TAction>(TAction action) where TAction : ActionBase;
-        Task<IEnumerable<OAuthSubscription>> GetOAuthSubcribersForAction<TAction>(TAction action) where TAction : ActionBase;
+        Task<IEnumerable<Subscription>> GetSubscribersForAction<TAction>(TAction action) where TAction : ActionBase;
     }
 }

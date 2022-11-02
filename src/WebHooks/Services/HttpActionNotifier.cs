@@ -2,12 +2,14 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Net.Http.Json;
-using System.Net.Http.Headers;
+using System.Text.Json.Serialization;
 using System.Net.Http;
 using WebHooks.Actions.Base;
 using WebHooks.Services.Base;
 using WebHooks.Subscriptions.Base;
-using WebHooks.Subscriptions;
+using System.Text;
+using System.Security.Cryptography;
+using System.Text.Json;
 
 namespace WebHooks.Services
 {
@@ -24,15 +26,7 @@ namespace WebHooks.Services
         {
             List<Task> eventTasks = new List<Task>();
 
-            foreach (var subscription in await _subscribers.GetUnauthenticatedSubcribersForAction(action))
-            {
-                eventTasks.Add(Send(action, subscription));
-            }
-            foreach (var subscription in await _subscribers.GetBasicAuthSubcribersForAction(action))
-            {
-                eventTasks.Add(Send(action, subscription));
-            }
-            foreach (var subscription in await _subscribers.GetOAuthSubcribersForAction(action))
+            foreach (var subscription in await _subscribers.GetSubscribersForAction(action))
             {
                 eventTasks.Add(Send(action, subscription));
             }
@@ -43,20 +37,31 @@ namespace WebHooks.Services
         private Task Send<TAction>(TAction action, Subscription subscription) where TAction : ActionBase
         {
             using var httpClient = new HttpClient();
-            return httpClient.PostAsJsonAsync(subscription.Endpoint, action);
-        }
-        private Task Send<TAction>(TAction action, BasicAuthSubscription subscription) where TAction : ActionBase
-        {
-            using var httpClient = new HttpClient();
-            var authenticationString = $"{subscription.Username}:{subscription.Password}";
-            var base64EncodedAuthenticationString = Convert.ToBase64String(System.Text.ASCIIEncoding.UTF8.GetBytes(authenticationString));
-            // content.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64EncodedAuthenticationString);
-            return httpClient.PostAsJsonAsync(subscription.Endpoint, action);
-        }
-        private Task Send<TAction>(TAction action, OAuthSubscription subscription) where TAction : ActionBase
-        {
-            using var httpClient = new HttpClient();
+
+            if (!string.IsNullOrWhiteSpace(subscription.SecretToken))
+            {
+                // Convert action to byte array in order to compute the hash
+                string actionJson = JsonSerializer.Serialize(action, options: new JsonSerializerOptions()
+                {
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                    WriteIndented = false
+                });
+                byte[] actionBytes = Encoding.UTF8.GetBytes(actionJson);
+
+                // Convert secret token to byte array - for initializing HMACSHA256
+                byte[] secretTokenBytes = Convert.FromBase64String(subscription.SecretToken);
+
+                using HMACSHA256 hmac = new HMACSHA256(secretTokenBytes);
+
+                // Compute signature hash
+                byte[] actionHasBytes = hmac.ComputeHash(actionBytes);
+
+                // Convert signature hash to Base64String for transmission
+                string signature = Convert.ToBase64String(actionHasBytes);
+
+                httpClient.DefaultRequestHeaders.Add("x-hook-signature-256", signature);
+            }
+
             return httpClient.PostAsJsonAsync(subscription.Endpoint, action);
         }
     }
