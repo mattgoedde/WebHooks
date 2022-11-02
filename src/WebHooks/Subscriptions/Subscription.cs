@@ -1,6 +1,6 @@
 using System;
 
-namespace WebHooks.Subscriptions.Base
+namespace WebHooks.Subscriptions
 {
     public class Subscription
     {

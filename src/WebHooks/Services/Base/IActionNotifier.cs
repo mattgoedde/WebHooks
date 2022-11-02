@@ -1,11 +1,10 @@
-using System;
 using System.Threading.Tasks;
-using WebHooks.Actions.Base;
+using WebHooks.Actions;
 
 namespace WebHooks.Services.Base
 {
     public interface IActionNotifier
     {
-        public Task Notify<TAction>(TAction action) where TAction : ActionBase;
+        public Task Notify<TAction>(TAction action) where TAction : BaseAction;
     }
 }

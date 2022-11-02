@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http;
-using WebHooks.Actions.Base;
 using WebHooks.Services.Base;
-using WebHooks.Subscriptions.Base;
+using WebHooks.Subscriptions;
 using System.Text;
 using System.Security.Cryptography;
 using System.Text.Json;
+using WebHooks.Actions;
 
 namespace WebHooks.Services
 {
@@ -22,7 +22,7 @@ namespace WebHooks.Services
             _subscribers = subscribers;
         }
 
-        public async Task Notify<TAction>(TAction action) where TAction : ActionBase
+        public async Task Notify<TAction>(TAction action) where TAction : BaseAction
         {
             List<Task> eventTasks = new List<Task>();
 
@@ -34,7 +34,7 @@ namespace WebHooks.Services
             await Task.WhenAll(eventTasks);
         }
 
-        private Task Send<TAction>(TAction action, Subscription subscription) where TAction : ActionBase
+        private Task Send<TAction>(TAction action, Subscription subscription) where TAction : BaseAction
         {
             using var httpClient = new HttpClient();
 
