@@ -1,6 +1,15 @@
-# WebHooks
+# MGoedde.WebHooks
+
+## A lightweight, low/zero dependency WebHook provider.
+
+- Easy to add
+- Easy to define Payload(s)
+- Easy to manage subscribers
+- (Optionally) Easy to secure
 
 ### 1. Implement `ISubscriberService`
+
+This implementation will provide Subscribers each time an `IActionNotifier.NotifyAsync<TAction>()` is called.
 
 ```csharp
 public class SubscriberService : ISubscriberService
@@ -22,6 +31,8 @@ public class SubscriberService : ISubscriberService
 ```
 
 ### 2. Implement `BaseAction`
+
+This implementation defines the payload sent to subscribers.
 
 ```csharp
 public class MessageAction : BaseAction
