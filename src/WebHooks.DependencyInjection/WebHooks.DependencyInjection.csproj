@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebHooks\WebHooks.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>MGoedde.WebHook.DependencyInjection</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Matthew Goedde</Authors>
+    <Description>
+      This package is a lightweight way of sending WebHook requests in your project. 
+      First, create an implementation of BaseAction that defines your payload you'll send to your subscribers.
+      Second, create an implementation of ISubscriberService that provides a way to retrieve your subscribers' information from configuration or a data store.
+      Third, add WebHooks to your Dependency Injection container using AddWebHooks().
+      Last, inject IActionNotifier and call Notify().
+    </Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
+  </ItemGroup>
+
+</Project>

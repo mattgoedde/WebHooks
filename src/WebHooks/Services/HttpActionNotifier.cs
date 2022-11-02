@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http;
 using WebHooks.Services.Base;
@@ -10,13 +9,17 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Text.Json;
 using WebHooks.Actions;
-using System.Threading;
 
 namespace WebHooks.Services
 {
     public class HttpActionNotifier : IActionNotifier
     {
         private readonly ISubscriberService _subscribers;
+        private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            WriteIndented = false
+        };
 
         public HttpActionNotifier(ISubscriberService subscribers)
         {
@@ -39,14 +42,11 @@ namespace WebHooks.Services
         {
             using var httpClient = new HttpClient();
 
+            string actionJson = JsonSerializer.Serialize(action, options: jsonOptions);
+
             if (!string.IsNullOrWhiteSpace(subscription.SecretToken))
             {
                 // Convert action to byte array in order to compute the hash
-                string actionJson = JsonSerializer.Serialize(action, options: new JsonSerializerOptions()
-                {
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                    WriteIndented = false
-                });
                 byte[] actionBytes = Encoding.UTF8.GetBytes(actionJson);
 
                 // Convert secret token to byte array - for initializing HMACSHA256
@@ -63,7 +63,8 @@ namespace WebHooks.Services
                 httpClient.DefaultRequestHeaders.Add("x-hook-signature-256", signature);
             }
 
-            await httpClient.PostAsJsonAsync(subscription.Endpoint, action);
+            var content = new StringContent(actionJson, Encoding.UTF8, "application/json");
+            await httpClient.PostAsync(subscription.Endpoint, content);
         }
     }
 }
